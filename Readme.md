@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Лев](https://up.htmlacademy.ru/javascript/20/user/1342229).
-* Наставник: `Неизвестно`.
+* Наставник: Виктор Кан.
 
 ---
 
