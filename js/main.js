@@ -33,7 +33,7 @@ var generatePin = function (amount) {
   for (var i = 0; i < amount; i++) {
     pinsArray[i] = {
       author: {
-        avatar: 'img/avatars/user' + MOCK_AVATARS[i] + '.png'
+        avatar: 'img/avatars/user' + '0' + getRandomNumber(1, MOCK_AVATARS.length) + '.png'
       },
       offer: {
         title: 'заголовок предложения',
@@ -64,7 +64,6 @@ var pins = generatePin(8);
 
 var mapElement = document.querySelector('.map');
 mapElement.classList.remove('map--faded');
-
 var listElement = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinimg = pinTemplate.querySelector('img');
@@ -89,25 +88,58 @@ renderPins(listElement, pins);
 
 var filrtersElement = document.querySelector('.map__filters-container');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-var card = cardTemplate.cloneNode(true);
-mapElement.insertBefore(card, filrtersElement);
 
-card.querySelector('.popup__title').textContent = pins[0].offer.title;
-card.querySelector('.popup__text--address').textContent = pins[0].offer.address.locationX + ' - ' + pins[0].offer.address.locationY;
-card.querySelector('.popup__text--price').textContent = pins[0].offer.price + ' ₽/ночь';
-card.querySelector('.popup__type').textContent = pins[0].offer.type;
-card.querySelector('.popup__text--capacity').textContent = pins[0].offer.rooms + ' комнаты для ' + pins[0].offer.guests + ' гостей';
-card.querySelector('.popup__text--time').textContent = 'Заезд после ' + pins[0].offer.checkin + ', выезд до ' + pins[0].offer.checkout;
-card.querySelector('.popup__description').textContent = pins[0].offer.description;
-card.querySelector('.popup__photo').src = pins[0].offer.photos;
-card.querySelector('.popup__avatar').src = pins[0].author.avatar;
+var renderFeatures = function (container, arr) {
+  container.innerHTML = '';
+  arr.forEach(function (feature) {
+    var li = document.createElement(li);
+    li.classList.add('popup__feature', 'popup__feature--' + feature);
+    container.appendChild(li);
+  });
+};
 
-var cardElements = card.querySelectorAll('.popup__features');
-var children = cardElements[0].children;
+var renderPhotos = function (container, arr) {
+  container.innerHTML = '';
+  for (var i = 0; i < arr.length; i++) {
+    var img = document.createElement('img');
+    img.classList.add('popup__photo');
+    img.src = arr[i];
+    img.style.width = 45 + 'px';
+    img.style.height = 40 + 'px';
+    container.appendChild(img);
+    if (arr[i] === arr[i - 1]) {
+      container.removeChild(img);
+    }
+  }
+};
 
-for (var i = children.length - 1; i >= 0; i--) {
-  var child = children[i];
-  child.parentElement.removeChild(child);
-}
+var types = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
 
+var createCard = function (pinsarr) {
+  var card = cardTemplate.cloneNode(true);
+  card.querySelector('.popup__title').textContent = pinsarr.offer.title;
+  card.querySelector('.popup__text--address').textContent = pinsarr.offer.address.locationX + ' - ' + pinsarr.offer.address.locationY;
+  card.querySelector('.popup__text--price').textContent = pinsarr.offer.price + ' ₽/ночь';
+  card.querySelector('.popup__type').textContent = types[pinsarr.offer.type];
+  card.querySelector('.popup__text--capacity').textContent = pinsarr.offer.rooms + ' комнаты для ' + pinsarr.offer.guests + ' гостей';
+  card.querySelector('.popup__text--time').textContent = 'Заезд после ' + pinsarr.offer.checkin + ', выезд до ' + pinsarr.offer.checkout;
+  card.querySelector('.popup__description').textContent = pinsarr.offer.description;
+  renderPhotos(card.querySelector('.popup__photos'), pinsarr.offer.photos);
+  card.querySelector('.popup__avatar').src = pinsarr.author.avatar;
+  renderFeatures(card.querySelector('.popup__features'), pinsarr.offer.features);
 
+  return card;
+};
+
+var renderCard = function (container, data) {
+  for (var i = 0; i < data.length; i++) {
+    container.appendChild(createCard(data[i]));
+  }
+};
+
+renderCard(filrtersElement, pins);
