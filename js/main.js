@@ -1,9 +1,11 @@
 'use strict';
 
-var MIN_X = 50;
+var MIN_X = 25;
 var MIN_Y = 130;
-var MAX_X = 1150;
+var MAX_X = 1175;
 var MAX_Y = 630;
+var PIN_HEIGHT = 70;
+var PIN_WIDTH = 50;
 var MOCK_TIMES = ['12:00', '13:00', '14:00'];
 var MOCK_AVATARS = ['01', '02', '03', '04', '05', '06', '07', '08'];
 var MOCK_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
@@ -62,8 +64,7 @@ var generatePin = function (amount) {
 
 var pins = generatePin(8);
 
-var mapElement = document.querySelector('.map');
-mapElement.classList.remove('map--faded');
+/*
 var listElement = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinimg = pinTemplate.querySelector('img');
@@ -143,3 +144,59 @@ var renderCard = function (container, data) {
 };
 
 renderCard(filrtersElement, pins);
+*/
+
+var fieldsetElement = document.querySelectorAll('fieldset');
+var formElement = document.querySelectorAll('.map__filter');
+
+for (var i = 0; i < formElement.length; i++) {
+  formElement[i].disabled = true;
+}
+
+for (i = 0; i < fieldsetElement.length; i++) {
+  fieldsetElement[i].disabled = true;
+}
+
+var pinMain = document.querySelector('.map__pin--main');
+
+pinMain.addEventListener('mousedown', function () {
+  var mapElement = document.querySelector('.map');
+  mapElement.classList.remove('map--faded');
+  for (i = 0; i < fieldsetElement.length; i++) {
+    fieldsetElement[i].disabled = false;
+  }
+});
+
+var addresElement = document.querySelector('#address');
+addresElement.value = pins[0].offer.address.locationX + PIN_WIDTH / 2 + ' ' + (pins[0].offer.address.locationY + PIN_HEIGHT);
+
+var roomSelect = document.querySelector('#room_number');
+var capacitySelect = document.querySelector('#capacity');
+
+var roomArr = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  100: [0]
+};
+
+function checkRooms(amount) {
+  var capacityOptions = capacitySelect.querySelectorAll('option');
+
+  capacityOptions.forEach(function (option) {
+    option.disabled = true;
+  });
+
+  roomArr[amount].forEach(function (placeAmount) {
+    capacityOptions.forEach(function (option) {
+      if (Number(option.value) === placeAmount) {
+        option.disabled = false;
+        option.selected = true;
+      }
+    });
+  });
+}
+
+roomSelect.addEventListener('change', function (evt) {
+  checkRooms(evt.target.value);
+});
