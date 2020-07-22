@@ -64,7 +64,7 @@ var generatePin = function (amount) {
 
 var pins = generatePin(8);
 
-/*
+
 var listElement = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinimg = pinTemplate.querySelector('img');
@@ -84,9 +84,7 @@ var renderPins = function (container, data) {
     container.appendChild(createPin(data[i]));
   }
 };
-
-renderPins(listElement, pins);
-
+/*
 var filrtersElement = document.querySelector('.map__filters-container');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
@@ -149,26 +147,32 @@ renderCard(filrtersElement, pins);
 var fieldsetElement = document.querySelectorAll('fieldset');
 var formElement = document.querySelectorAll('.map__filter');
 
-for (var i = 0; i < formElement.length; i++) {
-  formElement[i].disabled = true;
+function toggleForm(boolean, element) {
+  element.forEach(function (el) {
+    el.disabled = boolean;
+  });
 }
 
-for (i = 0; i < fieldsetElement.length; i++) {
-  fieldsetElement[i].disabled = true;
-}
+toggleForm(true, fieldsetElement);
+toggleForm(true, formElement);
 
 var pinMain = document.querySelector('.map__pin--main');
+var mapElement = document.querySelector('.map');
 
 pinMain.addEventListener('mousedown', function () {
-  var mapElement = document.querySelector('.map');
   mapElement.classList.remove('map--faded');
-  for (i = 0; i < fieldsetElement.length; i++) {
-    fieldsetElement[i].disabled = false;
-  }
+  toggleForm(false, fieldsetElement);
+  toggleForm(false, formElement);
+  renderPins(listElement, pins);
 });
 
-var addresElement = document.querySelector('#address');
-addresElement.value = pins[0].offer.address.locationX + PIN_WIDTH / 2 + ' ' + (pins[0].offer.address.locationY + PIN_HEIGHT);
+var addressInput = document.querySelector('#address');
+
+var getAddresPin = function (arr, addressElement) {
+  addressElement.value = arr[0].offer.address.locationX + PIN_WIDTH / 2 + ' ' + (arr[0].offer.address.locationY + PIN_HEIGHT);
+};
+
+getAddresPin(pins, addressInput);
 
 var roomSelect = document.querySelector('#room_number');
 var capacitySelect = document.querySelector('#capacity');
