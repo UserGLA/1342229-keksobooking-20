@@ -64,7 +64,6 @@ var generatePin = function (amount) {
 
 var pins = generatePin(8);
 
-
 var listElement = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinimg = pinTemplate.querySelector('img');
@@ -84,7 +83,7 @@ var renderPins = function (container, data) {
     container.appendChild(createPin(data[i]));
   }
 };
-/*
+
 var filrtersElement = document.querySelector('.map__filters-container');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
@@ -142,7 +141,7 @@ var renderCard = function (container, data) {
 };
 
 renderCard(filrtersElement, pins);
-*/
+
 
 var fieldsetElement = document.querySelectorAll('fieldset');
 var formElement = document.querySelectorAll('.map__filter');
